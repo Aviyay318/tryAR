@@ -4,12 +4,16 @@ import java.awt.*;
 public class PanelOne extends JPanel {
     private PanelTwo panelTwo;
     private Keyboard keyboard;
+    private boolean keepGoing;
+
     public PanelOne(int x,int y,int width,int height){
+        this.keepGoing = true;
+
         this.setBounds(x,y,width,height);
         this.setLayout(null);
         this.setBackground(Color.BLUE);
 
-        this.panelTwo = new PanelTwo(300,600, 150,100);
+        this.panelTwo = new PanelTwo(PanelTwo.PANEL_TWO_WIDTH,PanelTwo.PANEL_TWO_HEIGHT, 150,100);
         this.add(panelTwo);
         this.panelTwo.setVisible(true);
 
@@ -24,11 +28,11 @@ public class PanelOne extends JPanel {
     }
 
     public void checkKeyboardState(){
-        boolean stop=false;
         new Thread(()->{
-            while(!stop){
+            while(this.keepGoing){
                 if (keyboard.isHide()){
                     panelTwo.setVisible(false);
+                    this.keepGoing = false;
                 }
             }
         }).start();
