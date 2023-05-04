@@ -9,7 +9,7 @@ public class PanelOne extends JPanel {
         this.setLayout(null);
         this.setBackground(Color.BLUE);
 
-        this.panelTwo = new PanelTwo(300,600, 90,100);
+        this.panelTwo = new PanelTwo(300,600, 150,100);
         this.add(panelTwo);
         this.panelTwo.setVisible(true);
 

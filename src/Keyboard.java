@@ -15,6 +15,8 @@ public class Keyboard implements KeyListener {
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()){
             case KeyEvent.VK_LEFT: {System.out.println("left"); this.hide=true;}
+            case KeyEvent.VK_RIGHT: {System.out.println("right"); this.hide=true;}
+            case KeyEvent.VK_SPACE: {System.out.println("space"); this.hide=true;}
         }
     }
 
@@ -26,7 +28,11 @@ public class Keyboard implements KeyListener {
     }
 
     public boolean isHide() {
-        System.out.println(this.hide);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return this.hide;
     }
 }
