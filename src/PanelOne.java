@@ -34,7 +34,7 @@ public class PanelOne extends JPanel {
         this.panelTwo.setVisible(true);
 
         this.sound = new Sound();
-        playMusic();
+        //playMusic();
 
         this.keyboard = new Keyboard();
         this.setFocusable(true);
@@ -51,7 +51,7 @@ public class PanelOne extends JPanel {
             while(!sound.isTransitionDone()){
                 this.sound.loop();
             }
-            this.sound.loop();
+            //this.sound.loop();
         }).start();
 
     }
@@ -83,12 +83,10 @@ public class PanelOne extends JPanel {
     public void drawBalls(Graphics2D graphics2D){
         for (Ball ball: balls) {
             ball.render(graphics2D,this.interpolation);
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
             ball.move();
+            if (keyboard.isHit()){
+                ball.destroy();
+            }
         }
     }
 

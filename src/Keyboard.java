@@ -3,6 +3,7 @@ import java.awt.event.KeyListener;
 
 public class Keyboard implements KeyListener {
     private static boolean hide = false;
+    private static boolean hit = false;
     public Keyboard(){
     }
 
@@ -15,12 +16,17 @@ public class Keyboard implements KeyListener {
         switch (e.getKeyCode()){
             case KeyEvent.VK_LEFT -> {System.out.println("left"); hide=true;}
             case KeyEvent.VK_RIGHT -> {System.out.println("right"); hide=true;}
-            case KeyEvent.VK_SPACE -> {System.out.println("space"); hide=true;}
+            case KeyEvent.VK_SPACE -> {System.out.println("space"); hide=true; hit=true; }
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
+        switch (e.getKeyCode()){
+            case KeyEvent.VK_LEFT -> {System.out.println("left"); hide=true;}
+            case KeyEvent.VK_RIGHT -> {System.out.println("right"); hide=true;}
+            case KeyEvent.VK_SPACE -> {System.out.println("space"); hide=true; hit=false; }
+        }
     }
 
     public boolean isHide() {
@@ -30,5 +36,8 @@ public class Keyboard implements KeyListener {
             throw new RuntimeException(e);
         }
         return hide;
+    }
+    public boolean isHit(){
+        return hit;
     }
 }

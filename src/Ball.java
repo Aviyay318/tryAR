@@ -11,7 +11,7 @@ public class Ball extends JLabel {
     public final int GRASS_HEIGHT = 720;
     private final int LEFT_POSITION = 0;
     private final int RIGHT_POSITION = 800;
-    public final int WIDTH_HEIGHT_DEFAULT = random.nextInt(50,70);
+    public final int WIDTH_HEIGHT_DEFAULT = 100;
 
     private int defaultXPosition;
     private int defaultYPosition;
@@ -20,9 +20,13 @@ public class Ball extends JLabel {
     private int width;
     private int height;
 
+    private Thread moveThread;
     private int speed;
-    private int health;
+    private double health;
     private BufferedImage ball;
+
+    private JLabel numbers;
+    private Rectangle rectangle;
 
     public Ball(){
         createXPosition();
@@ -34,16 +38,16 @@ public class Ball extends JLabel {
         this.height = WIDTH_HEIGHT_DEFAULT;
 
         this.speed = 2;
-
-        this.setText("4");
-        this.setBounds(this.defaultXPosition,this.defaultYPosition,this.width,this.height);
-        this.setVisible(true);
         this.health = random.nextInt(1,30);
+        this.rectangle = new Rectangle(this.defaultXPosition,this.defaultYPosition,this.width,this.height);
+
         try {
             this.ball = ImageIO.read(new File("images/balls/red.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        this.moveThread = new Thread();
     }
 
     private void createXPosition(){
@@ -98,21 +102,34 @@ public class Ball extends JLabel {
     }
 
     public void move(){
-        new Thread(() -> {
+        this.moveThread = new Thread(() -> {
             moveUp();
             moveDown();
-        }).start();
+        });
+        this.moveThread.start();
     }
 
+
+
     public void destroy(){
-        if (health == 0) {
+        if (this.health == 0) {
             this.width = 0;
             this.height = 0;
+        } else {
+            this.health -= 1;
         }
     }
 
     public void render(Graphics2D graphics2D, float interpolation){
-        graphics2D.drawImage(this.ball, ((int)((this.defaultXPosition + this.xPosition) + interpolation)), ((int) (this.defaultYPosition + this.yPosition+interpolation)),this.width,this.height,null);
+
+        if (this.health!=0){
+            int xMovement =  ((int)((this.defaultXPosition + this.xPosition) + interpolation));
+            int yMovement = ((int) (this.defaultYPosition + this.yPosition+interpolation));
+            graphics2D.drawImage(this.ball,xMovement-15, yMovement-68,this.width,this.height,null);
+            graphics2D.setFont(new Font("arial",0,65));
+            graphics2D.setColor(Color.white);
+            graphics2D.drawString(Integer.toString((int)this.health),xMovement,yMovement);
+        }
     }
 
 }

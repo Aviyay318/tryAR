@@ -148,6 +148,7 @@ public class PanelTwo extends JPanel {
             try{
                 Thread.sleep(15);
             }catch (InterruptedException e){
+                e.getStackTrace();
             }
             this.progressBarCounter+=1;
         }
