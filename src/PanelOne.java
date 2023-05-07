@@ -1,100 +1,106 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class PanelOne extends JPanel {
+
+    public static final int PANEL_ONE_WIDTH = 900;
+    public static final int PANEL_ONE_HEIGHT = 1000;
+
+    private Sound sound;
+
     private PanelTwo panelTwo;
     private Keyboard keyboard;
     private boolean keepGoing;
-    private Sound sound;
+
     private JProgressBar jProgressBar;
     private int progressBarCounter;
-    public PanelOne(int x,int y,int width,int height){
-        this.keepGoing = true;
 
-        this.setBounds(x,y,width,height);
+    private ArrayList<Ball> balls;
+    private float interpolation;
+
+    public PanelOne(){
+        this.keepGoing = true;
+        this.setBounds(0,0,PANEL_ONE_WIDTH, PANEL_ONE_HEIGHT);
         this.setLayout(null);
         this.setBackground(Color.BLUE);
+        this.setIgnoreRepaint(true);
 
         this.panelTwo = new PanelTwo(PanelTwo.PANEL_TWO_WIDTH,PanelTwo.PANEL_TWO_HEIGHT, 150,100);
         this.add(panelTwo);
         this.panelTwo.setVisible(true);
 
+        this.sound = new Sound();
+        playMusic();
+
         this.keyboard = new Keyboard();
         this.setFocusable(true);
         this.requestFocus(true);
         this.addKeyListener(this.keyboard);
-
-        this.progressBarCounter = 0;
-
         checkKeyboardState();
 
-        this.sound = new Sound();
-        playMusic();
-
+        this.balls = new ArrayList<>();
 
         this.setVisible(true);
-
-    }
-
-
-    public void addProgressBar(){
-        this.jProgressBar = new JProgressBar();
-        this.jProgressBar.setBounds(900/3-50,1100/3+100,400,200);
-        this.jProgressBar.setStringPainted(true);
-        this.jProgressBar.setFont(new Font("arial",Font.BOLD,20));
-        this.jProgressBar.setBackground(new Color(238,177,255));
-        this.jProgressBar.setForeground(Color.white);
-        this.add(this.jProgressBar);
-    }
-    public void fillProgressBar(){
-        new Thread(() -> {
-            while(this.progressBarCounter <= 100){
-                this.jProgressBar.setValue(this.progressBarCounter);
-                try{
-                    Thread.sleep(15);
-                }catch (InterruptedException e){
-
-                }
-                this.progressBarCounter+=1;
-            }
-        }).start();
     }
     public void playMusic(){
         new Thread(()->{
-            while(true){
+            while(!sound.isTransitionDone()){
                 this.sound.loop();
             }
+            this.sound.loop();
         }).start();
+
     }
+
     public void checkKeyboardState(){
         new Thread(()->{
-            while(this.keepGoing){
+            while(true){
                 if (keyboard.isHide()){
                     try {
-                        addProgressBar();
-                        fillProgressBar();
+                        System.out.println("shit");
                         Thread.sleep(2000);
-                        panelTwo.setVisible(false);
-                        this.jProgressBar.setVisible(false);
-                        this.keepGoing = false;
+                        System.out.println("shit2");
+                        this.panelTwo.setVisible(false);
+                        createBalls();
+                        break;
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-
                 }
             }
         }).start();
     }
+
+    public void createBalls(){
+        for(int i=0; i<3; i++){
+            balls.add(new Ball());
+        }
+    }
+    public void drawBalls(Graphics2D graphics2D){
+        for (Ball ball: balls) {
+            ball.render(graphics2D,this.interpolation);
+            ball.move();
+        }
+    }
+
+    public void render(float interpolation){
+        this.interpolation = interpolation;
+        this.repaint();
+    }
+
     public void paintComponent(Graphics graphics){
         super.paintComponent(graphics);
+        Graphics2D graphics2D = (Graphics2D) graphics;
         try {
-            graphics.drawImage(ImageIO.read(new File("images/backGround2.png")),0,0,900,1000,null);
+            graphics2D.drawImage(ImageIO.read(new File("images/backGround2.png")),0,0,900,1000,null);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        drawBalls(graphics2D);
     }
+
 }

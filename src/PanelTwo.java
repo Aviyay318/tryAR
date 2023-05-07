@@ -2,11 +2,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Scanner;
 
 public class PanelTwo extends JPanel {
 
@@ -22,10 +19,14 @@ public class PanelTwo extends JPanel {
     private JLabel shootInstructions;
 
     private BufferedImage crown;
-    private BufferedImage [] left;
-    private BufferedImage [] right;
-    private BufferedImage [] space;
+    private BufferedImage [] leftKey;
+    private BufferedImage [] rightKey;
+    private BufferedImage [] spaceKey;
 
+    private Keyboard keyboard;
+    private JProgressBar jProgressBar;
+    private int progressBarCounter;
+    boolean checkState;
     private Score score;
     private int index;
 
@@ -47,9 +48,18 @@ public class PanelTwo extends JPanel {
         this.score.writeScore();
         addHighScore(this.score.addScore());
 
+
+        this.keyboard = new Keyboard();
+        this.jProgressBar = new JProgressBar();
+        this.progressBarCounter = 0;
+        this.checkState = true;
+        checkIfIsHideTrue();
+        this.setFocusable(true);
+        this.requestFocus(true);
+        this.addKeyListener(this.keyboard);
+
         this.setOpaque(false);
         this.setVisible(true);
-
 
 
     }
@@ -123,12 +133,42 @@ public class PanelTwo extends JPanel {
         this.shootInstructions.setForeground(new Color(238,177,255));
     }
 
+    public void addProgressBar(){
+        this.jProgressBar = new JProgressBar();
+        this.jProgressBar.setBounds(PANEL_TWO_WIDTH/3-100,PANEL_TWO_HEIGHT/3+100,400,200);
+        this.jProgressBar.setStringPainted(true);
+        this.jProgressBar.setFont(new Font("arial",Font.BOLD,20));
+        this.jProgressBar.setBackground(new Color(238,177,255));
+        this.jProgressBar.setForeground(Color.white);
+        this.add(this.jProgressBar);
+    }
+    public void fillProgressBar(){
+        while(this.progressBarCounter <= 100){
+            this.jProgressBar.setValue(this.progressBarCounter);
+            try{
+                Thread.sleep(15);
+            }catch (InterruptedException e){
+            }
+            this.progressBarCounter+=1;
+        }
+    }
+
+    private void checkIfIsHideTrue(){
+        new Thread(()->{
+            while (this.checkState){
+                if (this.keyboard.isHide()){
+                    addProgressBar();
+                    fillProgressBar();
+                    this.checkState = false;
+                }
+            }
+        }).start();
+    }
     private void loadImages(){
-        final int SIZE = 2;
         try {
-            this.right = new BufferedImage[]{ImageIO.read(new File("images/instructions/rightUnPressed.png")), ImageIO.read(new File("images/instructions/rightPressed.png"))};
-            this.left = new BufferedImage[]{ImageIO.read(new File("images/instructions/leftUnPressed.png")), ImageIO.read(new File("images/instructions/leftPressed.png"))};
-            this.space = new BufferedImage[]{ImageIO.read(new File("images/instructions/spaceUnPressed.png")), ImageIO.read(new File("images/instructions/spacePressed.png"))};
+            this.rightKey = new BufferedImage[]{ImageIO.read(new File("images/instructions/rightUnPressed.png")), ImageIO.read(new File("images/instructions/rightPressed.png"))};
+            this.leftKey = new BufferedImage[]{ImageIO.read(new File("images/instructions/leftUnPressed.png")), ImageIO.read(new File("images/instructions/leftPressed.png"))};
+            this.spaceKey = new BufferedImage[]{ImageIO.read(new File("images/instructions/spaceUnPressed.png")), ImageIO.read(new File("images/instructions/spacePressed.png"))};
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -147,10 +187,8 @@ public class PanelTwo extends JPanel {
         super.paintComponent(g);
         Graphics2D graphics2D = (Graphics2D) g;
         graphics2D.drawImage(this.crown,this.highScore.getX()-38,this.highScore.getY(),30,20,null);
-        keysAnimation(graphics2D,this.left,this.moveInstructions.getX()+70,this.moveInstructions.getY()+70,50,50);
-        keysAnimation(graphics2D,this.right,this.moveInstructions.getX()+130,this.moveInstructions.getY()+70,50,50);
-        keysAnimation(graphics2D,this.space,this.shootInstructions.getX()+25,this.shootInstructions.getY()+70,200,40);
-
-
+        keysAnimation(graphics2D,this.leftKey,this.moveInstructions.getX()+70,this.moveInstructions.getY()+70,50,50);
+        keysAnimation(graphics2D,this.rightKey,this.moveInstructions.getX()+130,this.moveInstructions.getY()+70,50,50);
+        keysAnimation(graphics2D,this.spaceKey,this.shootInstructions.getX()+25,this.shootInstructions.getY()+70,200,40);
     }
 }

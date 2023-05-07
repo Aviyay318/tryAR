@@ -8,6 +8,7 @@ public class Sound {
     private AudioInputStream transition;
     private AudioInputStream during;
     private boolean isTransitionAvailable;
+    private boolean isTransitionDone;
     private String state;
     private Keyboard keyboard;
 
@@ -25,6 +26,7 @@ public class Sound {
         this.keyboard = new Keyboard();
         System.out.println(this.keyboard.isHide());
         this.isTransitionAvailable=false;
+        this.isTransitionDone = false;
         checkTransitionAvailability();
         loadClip();
     }
@@ -51,17 +53,15 @@ public class Sound {
         close();
         this.state = "transition";
         loadClip();
-        long i = System.currentTimeMillis();
         try {
             Thread.sleep(2329);
-            long j = System.currentTimeMillis();
-            System.out.println(j-i);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         this.state = "during";
         close();
         loadClip();
+        this.isTransitionDone=true;
     }
 
     public void loadClip(){
@@ -90,5 +90,9 @@ public class Sound {
     }
     public void close(){
         clip.close();
+    }
+
+    public boolean isTransitionDone(){
+        return this.isTransitionDone;
     }
 }
