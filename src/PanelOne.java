@@ -10,20 +10,20 @@ public class PanelOne extends JPanel {
     public static final int PANEL_ONE_WIDTH = 900;
     public static final int PANEL_ONE_HEIGHT = 1000;
 
-    private Sound sound;
+    private Sound music;
 
     private PanelTwo panelTwo;
     private Keyboard keyboard;
-    private boolean keepGoing;
-
-    private JProgressBar jProgressBar;
-    private int progressBarCounter;
+//    private boolean keepGoing;
+//
+//    private JProgressBar jProgressBar;
+//    private int progressBarCounter;
 
     private ArrayList<Ball> balls;
     private float interpolation;
 
     public PanelOne(){
-        this.keepGoing = true;
+        //this.keepGoing = true;
         this.setBounds(0,0,PANEL_ONE_WIDTH, PANEL_ONE_HEIGHT);
         this.setLayout(null);
         this.setBackground(Color.BLUE);
@@ -33,7 +33,7 @@ public class PanelOne extends JPanel {
         this.add(panelTwo);
         this.panelTwo.setVisible(true);
 
-        this.sound = new Sound();
+        this.music = new Sound();
         //playMusic();
 
         this.keyboard = new Keyboard();
@@ -48,12 +48,11 @@ public class PanelOne extends JPanel {
     }
     public void playMusic(){
         new Thread(()->{
-            while(!sound.isTransitionDone()){
-                this.sound.loop();
+            while(!music.isTransitionDone()){
+                this.music.loop();
             }
             //this.sound.loop();
         }).start();
-
     }
 
     public void checkKeyboardState(){
@@ -89,7 +88,6 @@ public class PanelOne extends JPanel {
             }
         }
     }
-
     public void render(float interpolation){
         this.interpolation = interpolation;
         this.repaint();

@@ -48,6 +48,7 @@ public class Ball extends JLabel {
         }
 
         this.moveThread = new Thread();
+        this.moveThread.start();
     }
 
     private void createXPosition(){
@@ -102,11 +103,8 @@ public class Ball extends JLabel {
     }
 
     public void move(){
-        this.moveThread = new Thread(() -> {
-            moveUp();
-            moveDown();
-        });
-        this.moveThread.start();
+        moveUp();
+        moveDown();
     }
 
 

@@ -38,21 +38,21 @@ public class Window extends JFrame {
                 long now = System.nanoTime();
                 int updateCounter = 0;
 
-                while(now - lastUpdateTime > TIME_BETWEEN_UPDATES && updateCounter < MAX_UPDATES_BEFORE_RENDER){
+                while(now - this.lastUpdateTime > TIME_BETWEEN_UPDATES && updateCounter < MAX_UPDATES_BEFORE_RENDER){
                     this.panelOne.repaint();
-                    lastUpdateTime+=TIME_BETWEEN_UPDATES;
+                    this.lastUpdateTime+=TIME_BETWEEN_UPDATES;
                     updateCounter++;
                 }
 
-                if (now-lastUpdateTime > TIME_BETWEEN_UPDATES){
-                    lastUpdateTime = now - TIME_BETWEEN_UPDATES;
+                if (now-this.lastUpdateTime > TIME_BETWEEN_UPDATES){
+                    this.lastUpdateTime = now - TIME_BETWEEN_UPDATES;
                 }
 
-                float interpolation = Math.min(1.0f, (float) ((now-lastUpdateTime)/TIME_BETWEEN_UPDATES));
+                float interpolation = Math.min(1.0f, (float) ((now-this.lastUpdateTime)/TIME_BETWEEN_UPDATES));
                 panelOne.render(interpolation);
-                lastRenderTime = now;
+                this.lastRenderTime = now;
 
-                while(now - lastRenderTime < TIME_BETWEEN_RENDERS && now - lastUpdateTime < TIME_BETWEEN_UPDATES){
+                while(now - this.lastRenderTime < TIME_BETWEEN_RENDERS && now - this.lastUpdateTime < TIME_BETWEEN_UPDATES){
                     Thread.yield();
                     now = System.nanoTime();
                 }
