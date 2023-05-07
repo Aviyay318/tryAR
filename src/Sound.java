@@ -86,7 +86,9 @@ public class Sound {
         this.clip.start();
     }
     public void loop(){
-        this.clip.loop(Clip.LOOP_CONTINUOUSLY);
+        //this.clip.setMicrosecondPosition(0);
+        this.clip.loop(1);
+        //System.out.println(this.clip.getLineInfo());
     }
     public void close(){
         clip.close();
